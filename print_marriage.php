@@ -46,16 +46,24 @@ if ($cert['registrar_id']) {
     <div class="certificate-wrapper border-marriage">
         <div class="cert-inner">
 
-            <div class="top-meta">
-                <div><span>የጋብቻ ክብር መዝገብ ቅጽ ቁጥር / Marriage Register Form Number: </span><strong><?php echo $cert['certificate_number']; ?></strong></div>
-                <div><span>የጋብቻ ምዝገባ ልዩ መለያ ቁጥር / Marriage Registration Unique ID: </span><strong>MRG-<?php echo str_pad($cert['id'], 6, '0', STR_PAD_LEFT); ?></strong></div>
-            </div>
-
-            <div class="header-section">
-                <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
-                <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
-                <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
-                <div class="cert-title">የጋብቻ ምስክር ወረቀት<br>Marriage Certificate</div>
+            <div class="cert-header">
+                <div class="cert-header-spacer"></div>
+                <div class="cert-header-center">
+                    <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
+                    <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
+                    <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
+                    <div class="cert-title">የጋብቻ ምስክር ወረቀት<br>Marriage Certificate</div>
+                </div>
+                <div class="top-meta">
+                    <div class="multi-field">
+                        <span>የጋብቻ ክብር መዝገብ ቅጽ ቁጥር / Marriage Register Form Number:</span>
+                        <strong><?php echo $cert['certificate_number']; ?></strong>
+                    </div>
+                    <div class="multi-field">
+                        <span>የጋብቻ ምዝገባ ልዩ መለያ ቁጥር / Marriage Registration Unique ID:</span>
+                        <strong>MRG-<?php echo str_pad($cert['id'], 6, '0', STR_PAD_LEFT); ?></strong>
+                    </div>
+                </div>
             </div>
 
             <!-- Two Column: Wife (Left) | Husband (Right) -->
