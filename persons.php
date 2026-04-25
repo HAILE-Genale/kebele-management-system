@@ -192,14 +192,14 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($p['nationality']); ?></td>
                                 <td><?php echo $p['marital_status']; ?></td>
                                 <td>
-                                    <?php if($p['status'] == 'Active'): ?>
+                                    <?php if(($p['status'] ?? 'Active') == 'Active'): ?>
                                         <span class="badge-active">Active</span>
                                     <?php else: ?>
                                         <span class="badge-inactive">Inactive</span>
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <?php if($p['status'] == 'Active'): ?>
+                                    <?php if(($p['status'] ?? 'Active') == 'Active'): ?>
                                         <a href="persons.php?edit=<?php echo $p['id']; ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
                                         <a href="persons.php?delete=<?php echo $p['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
                                     <?php else: ?>
