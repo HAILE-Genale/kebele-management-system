@@ -24,8 +24,19 @@ CREATE TABLE IF NOT EXISTS persons (
     place_of_birth VARCHAR(150),
     nationality VARCHAR(100) DEFAULT 'Ethiopian',
     marital_status ENUM('Single', 'Married', 'Divorced', 'Widowed') DEFAULT 'Single',
+    status ENUM('Active', 'Inactive') DEFAULT 'Active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 2.1 Death Records Table (for existing residents)
+CREATE TABLE IF NOT EXISTS death_records (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    person_id INT UNIQUE NOT NULL,
+    date_of_death DATE NOT NULL,
+    cause_of_death VARCHAR(255),
+    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (person_id) REFERENCES persons(id) ON DELETE CASCADE
 );
 
 -- 3. Birth Certificates Table

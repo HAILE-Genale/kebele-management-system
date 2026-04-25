@@ -83,6 +83,8 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-bar input { flex: 1; }
         .search-bar button { width: auto; padding: 12px 25px; }
+        .badge-active { background: #28a745; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; }
+        .badge-inactive { background: #dc3545; color: white; padding: 4px 8px; border-radius: 12px; font-size: 0.85em; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -176,6 +178,7 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Date of Birth</th>
                                 <th>Nationality</th>
                                 <th>Marital Status</th>
+                                <th>Activity Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -189,12 +192,23 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo htmlspecialchars($p['nationality']); ?></td>
                                 <td><?php echo $p['marital_status']; ?></td>
                                 <td>
-                                    <a href="persons.php?edit=<?php echo $p['id']; ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                    <a href="persons.php?delete=<?php echo $p['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                                    <?php if($p['status'] == 'Active'): ?>
+                                        <span class="badge-active">Active</span>
+                                    <?php else: ?>
+                                        <span class="badge-inactive">Inactive</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <?php if($p['status'] == 'Active'): ?>
+                                        <a href="persons.php?edit=<?php echo $p['id']; ?>" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <a href="persons.php?delete=<?php echo $p['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
+                                    <?php else: ?>
+                                        <span style="color:#999; font-size:0.85em;"><i class="fas fa-ban"></i> Deceased</span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; else: ?>
-                            <tr><td colspan="7" style="text-align:center;">No citizens found.</td></tr>
+                            <tr><td colspan="8" style="text-align:center;">No citizens found.</td></tr>
                         <?php endif; ?>
                         </tbody>
                     </table>
