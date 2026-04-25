@@ -52,10 +52,8 @@ if ($cert['registrar_id']) {
             </div>
 
             <div class="header-section">
-                <div style="width:80px;height:50px;background:linear-gradient(to bottom,#009A44 33%,#FED100 33% 66%,#EF3340 66%);margin:0 auto 10px;">
-                    <div style="width:20px;height:20px;background:#0F47AF;border-radius:50%;margin:15px auto;"></div>
-                </div>
-                <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የሕይወት ኩነት ምዝገባ</div>
+                <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
+                <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
                 <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
                 <div class="cert-title">የጋብቻ ምስክር ወረቀት<br>Marriage Certificate</div>
             </div>

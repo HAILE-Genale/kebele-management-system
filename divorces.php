@@ -209,7 +209,7 @@ $certs = $conn->query("SELECT dv.*,
                                 <td><?php echo htmlspecialchars($c['w_first'].' '.$c['w_father'].' '.$c['w_grand']); ?></td>
                                 <td><?php echo $c['date_of_divorce']; ?></td>
                                 <td>
-                                    <a href="print_divorce.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm"><i class="fas fa-print"></i></a>
+                                    <a href="print_divorce.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i></a>
                                     <a href="divorces.php?delete=<?php echo $c['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

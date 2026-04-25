@@ -16,7 +16,7 @@ function isLoggedIn() {
 // Redirect to login if not authenticated
 function requireLogin() {
     if (!isLoggedIn()) {
-        header("Location: /kebele-management-system/index.php");
+        header("Location: /kebele-management-system/login.php");
         exit;
     }
 }

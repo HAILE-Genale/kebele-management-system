@@ -172,7 +172,7 @@ $certs = $conn->query("SELECT d.*, p.first_name, p.father_name, p.grandfather_na
                                 <td><?php echo $c['date_of_death']; ?></td>
                                 <td><?php echo $c['registered_date']; ?></td>
                                 <td>
-                                    <a href="print_death.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm"><i class="fas fa-print"></i></a>
+                                    <a href="print_death.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i></a>
                                     <a href="deaths.php?delete=<?php echo $c['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this certificate?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

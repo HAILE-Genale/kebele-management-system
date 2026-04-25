@@ -71,17 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h3>CIVIL REGISTRY</h3>
-        </div>
-        <ul class="nav-links">
-            <li><a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="persons.php"><i class="fas fa-users"></i> Citizens</a></li>
-            <li><a href="births.php" class="active"><i class="fas fa-baby"></i> Register Birth</a></li>
-        </ul>
-    </nav>
+    <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -148,7 +138,57 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <button type="submit" class="btn btn-primary" style="font-size: 1.1em; padding: 15px;"><i class="fas fa-print"></i> Register & Print Template</button>
                         </div>
                     </div>
+                    </div>
                 </form>
+            </div>
+
+            <div class="card-table" style="margin-top: 30px;">
+                <h3><i class="fas fa-list"></i> Registered Birth Certificates</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cert No.</th>
+                                <th>Child's Name</th>
+                                <th>Sex</th>
+                                <th>Date of Birth</th>
+                                <th>Reg. Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $births = $conn->query("
+                                SELECT b.id, b.certificate_number, b.registered_date, 
+                                       p.first_name, p.father_name, p.grandfather_name, p.sex, p.date_of_birth
+                                FROM birth_certificates b
+                                JOIN persons p ON b.person_id = p.id
+                                ORDER BY b.created_at DESC
+                            ");
+                            if($births->rowCount() > 0):
+                                while($row = $births->fetch(PDO::FETCH_ASSOC)):
+                            ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['certificate_number']); ?></td>
+                                <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['father_name'] . ' ' . $row['grandfather_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['sex']); ?></td>
+                                <td><?php echo htmlspecialchars($row['date_of_birth']); ?></td>
+                                <td><?php echo htmlspecialchars($row['registered_date']); ?></td>
+                                <td>
+                                    <a href="print_birth.php?id=<?php echo $row['id']; ?>" class="btn btn-primary btn-sm" target="_blank" style="padding: 5px 10px; font-size: 0.85em; display: inline-block; width: auto;"><i class="fas fa-print"></i> Print</a>
+                                </td>
+                            </tr>
+                            <?php 
+                                endwhile;
+                            else:
+                            ?>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">No birth certificates registered yet.</td>
+                            </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </main>

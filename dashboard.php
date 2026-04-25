@@ -25,30 +25,19 @@ $total_divorces = getCount($conn, 'divorce_certificates');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Kebele Management System</title>
+    <title>Dashboard - Bekke Agalo Kebele</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .stat-card a { text-decoration: none; color: inherit; display: block; }
+        .stat-card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .stat-card .view-link { font-size: 0.8em; color: var(--primary-color); margin-top: 8px; display: block; }
+    </style>
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <h3>CIVIL REGISTRY</h3>
-        </div>
-        <ul class="nav-links">
-            <li><a href="dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="persons.php"><i class="fas fa-users"></i> Citizens</a></li>
-            <li><a href="births.php"><i class="fas fa-baby"></i> Births</a></li>
-            <li><a href="deaths.php"><i class="fas fa-bed"></i> Deaths</a></li>
-            <li><a href="marriages.php"><i class="fas fa-ring"></i> Marriages</a></li>
-            <li><a href="divorces.php"><i class="fas fa-file-contract"></i> Divorces</a></li>
-            <li><a href="generate.php"><i class="fas fa-print"></i> Generate Certificate</a></li>
-            <?php if(isSuperAdmin()): ?>
-            <li><a href="admin/users.php"><i class="fas fa-user-shield"></i> User Management</a></li>
-            <?php endif; ?>
-        </ul>
-    </nav>
+    <?php include 'includes/sidebar.php'; ?>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -56,36 +45,51 @@ $total_divorces = getCount($conn, 'divorce_certificates');
             <h2>Dashboard Overview</h2>
             <div class="user-info">
                 <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?> (<?php echo htmlspecialchars($_SESSION['role']); ?>)</span>
-                <a href="logout.php" class="btn btn-primary" style="padding: 6px 12px; margin-left: 15px;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="logout.php" class="btn btn-primary" style="padding: 6px 16px; margin-left: 25px; width: auto; display: inline-block; font-size: 0.85em;"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
 
         <div class="content-wrapper">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>Total Citizens Registered</h3>
-                    <div class="value"><?php echo number_format($total_persons); ?></div>
+                    <a href="persons.php">
+                        <h3><i class="fas fa-users"></i> Total Kebele Members</h3>
+                        <div class="value"><?php echo number_format($total_persons); ?></div>
+                        <span class="view-link">View all members →</span>
+                    </a>
                 </div>
                 <div class="stat-card">
-                    <h3>Birth Certificates</h3>
-                    <div class="value"><?php echo number_format($total_births); ?></div>
+                    <a href="births.php">
+                        <h3><i class="fas fa-baby"></i> Birth Certificates</h3>
+                        <div class="value"><?php echo number_format($total_births); ?></div>
+                        <span class="view-link">View all births →</span>
+                    </a>
                 </div>
                 <div class="stat-card">
-                    <h3>Death Certificates</h3>
-                    <div class="value"><?php echo number_format($total_deaths); ?></div>
+                    <a href="deaths.php">
+                        <h3><i class="fas fa-cross"></i> Death Certificates</h3>
+                        <div class="value"><?php echo number_format($total_deaths); ?></div>
+                        <span class="view-link">View all deaths →</span>
+                    </a>
                 </div>
                 <div class="stat-card">
-                    <h3>Marriage Certificates</h3>
-                    <div class="value"><?php echo number_format($total_marriages); ?></div>
+                    <a href="marriages.php">
+                        <h3><i class="fas fa-ring"></i> Marriage Certificates</h3>
+                        <div class="value"><?php echo number_format($total_marriages); ?></div>
+                        <span class="view-link">View all marriages →</span>
+                    </a>
                 </div>
                 <div class="stat-card">
-                    <h3>Divorce Certificates</h3>
-                    <div class="value"><?php echo number_format($total_divorces); ?></div>
+                    <a href="divorces.php">
+                        <h3><i class="fas fa-file-contract"></i> Divorce Certificates</h3>
+                        <div class="value"><?php echo number_format($total_divorces); ?></div>
+                        <span class="view-link">View all divorces →</span>
+                    </a>
                 </div>
             </div>
 
             <div class="card-table">
-                <h3>Recent Registrations (Citizens)</h3>
+                <h3>Recent Records</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -94,7 +98,7 @@ $total_divorces = getCount($conn, 'divorce_certificates');
                                 <th>Full Name</th>
                                 <th>Sex</th>
                                 <th>Date of Birth</th>
-                                <th>Registration Date</th>
+                                <th>Date Added</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -115,7 +119,7 @@ $total_divorces = getCount($conn, 'divorce_certificates');
                             else:
                             ?>
                             <tr>
-                                <td colspan="5" style="text-align: center;">No citizens registered yet.</td>
+                                <td colspan="5" style="text-align: center;">No records yet.</td>
                             </tr>
                             <?php endif; ?>
                         </tbody>
