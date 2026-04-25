@@ -15,7 +15,7 @@ $db = new Database();
 $conn = $db->getConnection();
 
 // Fetch Birth Certificate joined with Person details
-$query = "SELECT b.certificate_number, b.mother_name, b.mother_nationality, b.father_nationality, b.registrar_id, b.registered_date, b.created_at,
+$query = "SELECT b.certificate_number, b.person_id, b.mother_name, b.mother_nationality, b.father_nationality, b.registrar_id, b.registered_date, b.created_at,
                  p.first_name, p.father_name, p.grandfather_name, p.sex, p.date_of_birth, p.place_of_birth, p.nationality
           FROM birth_certificates b 
           JOIN persons p ON b.person_id = p.id 
@@ -57,22 +57,24 @@ if ($cert['registrar_id']) {
     <div class="certificate-wrapper border-birth">
         <div class="cert-inner">
             
-            <div class="top-meta">
-                <div class="multi-field">
-                    <span>የልደት ክብር መዝገብ ቅጽ ቁጥር / Birth Register Form Number: </span>
-                    <strong><?php echo $cert['certificate_number']; ?></strong>
+            <div class="cert-header">
+                <div class="cert-header-spacer"></div>
+                <div class="cert-header-center">
+                    <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
+                    <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
+                    <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
+                    <div class="cert-title">የልደት ምስክር ወረቀት<br>Birth Certificate</div>
                 </div>
-                <div class="multi-field">
-                    <span>የልደት ምዝገባ ልዩ መለያ ቁጥር / Birth Registration Unique ID: </span>
-                    <strong><?php echo str_pad($cert['person_id'], 8, '0', STR_PAD_LEFT); ?></strong>
+                <div class="top-meta">
+                    <div class="multi-field">
+                        <span>የልደት ክብር መዝገብ ቅጽ ቁጥር / Birth Register Form Number:</span>
+                        <strong><?php echo $cert['certificate_number']; ?></strong>
+                    </div>
+                    <div class="multi-field">
+                        <span>የልደት ምዝገባ ልዩ መለያ ቁጥር / Birth Registration Unique ID:</span>
+                        <strong><?php echo str_pad($cert['person_id'], 8, '0', STR_PAD_LEFT); ?></strong>
+                    </div>
                 </div>
-            </div>
-
-            <div class="header-section">
-                <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
-                <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
-                <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
-                <div class="cert-title">የልደት ምስክር ወረቀት<br>Birth Certificate</div>
             </div>
 
             <div class="form-row mt-4">
