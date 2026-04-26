@@ -31,16 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $place_of_birth = trim($_POST['place_of_birth']);
     $nationality = trim($_POST['nationality']);
     $marital_status = $_POST['marital_status'];
+    $educational_level = trim($_POST['educational_level']);
+    $occupational_level = trim($_POST['occupational_level']);
 
     if (isset($_POST['edit_id']) && !empty($_POST['edit_id'])) {
         // UPDATE
-        $stmt = $conn->prepare("UPDATE persons SET first_name=?, father_name=?, grandfather_name=?, sex=?, date_of_birth=?, place_of_birth=?, nationality=?, marital_status=? WHERE id=?");
-        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $_POST['edit_id']]);
+        $stmt = $conn->prepare("UPDATE persons SET first_name=?, father_name=?, grandfather_name=?, sex=?, date_of_birth=?, place_of_birth=?, nationality=?, marital_status=?, educational_level=?, occupational_level=? WHERE id=?");
+        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_level, $_POST['edit_id']]);
         $success = "Citizen record updated successfully.";
     } else {
         // CREATE
-        $stmt = $conn->prepare("INSERT INTO persons (first_name, father_name, grandfather_name, sex, date_of_birth, place_of_birth, nationality, marital_status) VALUES (?,?,?,?,?,?,?,?)");
-        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status]);
+        $stmt = $conn->prepare("INSERT INTO persons (first_name, father_name, grandfather_name, sex, date_of_birth, place_of_birth, nationality, marital_status, educational_level, occupational_level) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_level]);
         $success = "Citizen registered successfully.";
     }
 }
@@ -150,6 +152,23 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="Divorced" <?php echo ($edit_data && $edit_data['marital_status']=='Divorced') ? 'selected' : ''; ?>>Divorced</option>
                                 <option value="Widowed" <?php echo ($edit_data && $edit_data['marital_status']=='Widowed') ? 'selected' : ''; ?>>Widowed</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Educational Level</label>
+                            <select name="educational_level" class="form-control">
+                                <option value="Illiterate" <?php echo ($edit_data && $edit_data['educational_level']=='Illiterate') ? 'selected' : ''; ?>>Illiterate</option>
+                                <option value="Primary" <?php echo ($edit_data && $edit_data['educational_level']=='Primary') ? 'selected' : ''; ?>>Primary (1-8)</option>
+                                <option value="Secondary" <?php echo ($edit_data && $edit_data['educational_level']=='Secondary') ? 'selected' : ''; ?>>Secondary (9-12)</option>
+                                <option value="Certificate/Diploma" <?php echo ($edit_data && $edit_data['educational_level']=='Certificate/Diploma') ? 'selected' : ''; ?>>Certificate/Diploma</option>
+                                <option value="Degree" <?php echo ($edit_data && $edit_data['educational_level']=='Degree') ? 'selected' : ''; ?>>Degree</option>
+                                <option value="Masters" <?php echo ($edit_data && $edit_data['educational_level']=='Masters') ? 'selected' : ''; ?>>Masters</option>
+                                <option value="PhD" <?php echo ($edit_data && $edit_data['educational_level']=='PhD') ? 'selected' : ''; ?>>PhD</option>
+                                <option value="Other" <?php echo ($edit_data && $edit_data['educational_level']=='Other') ? 'selected' : ''; ?>>Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Occupational Level</label>
+                            <input type="text" name="occupational_level" class="form-control" placeholder="e.g. Farmer, Student, Civil Servant" value="<?php echo $edit_data ? htmlspecialchars($edit_data['occupational_level']) : ''; ?>">
                         </div>
                         <div class="form-group" style="grid-column: 1/-1;">
                             <button type="submit" class="btn btn-primary"><?php echo $edit_data ? 'Update Citizen' : 'Register Citizen'; ?></button>
