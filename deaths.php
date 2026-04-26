@@ -6,6 +6,16 @@ require_once 'config/database.php';
 
 $db = new Database();
 $conn = $db->getConnection();
+
+// --- SELF-HEAL: Ensure 'status' column exists ---
+try {
+    $check = $conn->query("SHOW COLUMNS FROM persons LIKE 'status'")->fetch();
+    if (!$check) {
+        $conn->exec("ALTER TABLE persons ADD COLUMN status ENUM('Active', 'Inactive') DEFAULT 'Active' AFTER marital_status");
+    }
+} catch (Exception $e) { /* Ignore errors here */ }
+// --- END SELF-HEAL ---
+
 $error = '';
 $success = '';
 
