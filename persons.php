@@ -56,9 +56,9 @@ if (isset($_GET['edit'])) {
 // Search
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 if ($search) {
-    $stmt = $conn->prepare("SELECT * FROM persons WHERE first_name LIKE ? OR father_name LIKE ? OR grandfather_name LIKE ? OR id = ? ORDER BY created_at DESC");
+    $stmt = $conn->prepare("SELECT * FROM persons WHERE CONCAT(first_name, ' ', father_name, ' ', grandfather_name) LIKE ? OR id = ? ORDER BY created_at DESC");
     $like = "%$search%";
-    $stmt->execute([$like, $like, $like, $search]);
+    $stmt->execute([$like, $search]);
 } else {
     $stmt = $conn->query("SELECT * FROM persons ORDER BY created_at DESC");
 }

@@ -16,41 +16,55 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['type']) && isset($_GET['
     $search = trim($_GET['search']);
     $like = "%$search%";
 
-    if ($type == 'birth') {
-        $stmt = $conn->prepare("SELECT b.id, b.certificate_number, p.first_name, p.father_name, p.grandfather_name, b.registered_date 
+    $queries = [];
+    if ($type == 'birth' || $type == 'all') {
+        $queries['birth'] = "SELECT b.id, b.certificate_number, p.first_name, p.father_name, p.grandfather_name, b.registered_date 
             FROM birth_certificates b JOIN persons p ON b.person_id = p.id 
-            WHERE p.first_name LIKE ? OR p.father_name LIKE ? OR b.certificate_number LIKE ?
-            ORDER BY b.created_at DESC");
-        $stmt->execute([$like, $like, $like]);
-    } elseif ($type == 'death') {
-        $stmt = $conn->prepare("SELECT d.id, d.certificate_number, p.first_name, p.father_name, p.grandfather_name, d.registered_date 
+            WHERE CONCAT(p.first_name, ' ', p.father_name, ' ', p.grandfather_name) LIKE ? OR b.certificate_number LIKE ?
+            ORDER BY b.created_at DESC";
+    }
+    if ($type == 'death' || $type == 'all') {
+        $queries['death'] = "SELECT d.id, d.certificate_number, p.first_name, p.father_name, p.grandfather_name, d.registered_date 
             FROM death_certificates d JOIN persons p ON d.person_id = p.id 
-            WHERE p.first_name LIKE ? OR p.father_name LIKE ? OR d.certificate_number LIKE ?
-            ORDER BY d.created_at DESC");
-        $stmt->execute([$like, $like, $like]);
-    } elseif ($type == 'marriage') {
-        $stmt = $conn->prepare("SELECT m.id, m.certificate_number, 
+            WHERE CONCAT(p.first_name, ' ', p.father_name, ' ', p.grandfather_name) LIKE ? OR d.certificate_number LIKE ?
+            ORDER BY d.created_at DESC";
+    }
+    if ($type == 'marriage' || $type == 'all') {
+        $queries['marriage'] = "SELECT m.id, m.certificate_number, 
             h.first_name as h_first, h.father_name as h_father,
             w.first_name as w_first, w.father_name as w_father, m.registered_date
             FROM marriage_certificates m 
             JOIN persons h ON m.husband_id = h.id JOIN persons w ON m.wife_id = w.id
-            WHERE h.first_name LIKE ? OR w.first_name LIKE ? OR m.certificate_number LIKE ?
-            ORDER BY m.created_at DESC");
-        $stmt->execute([$like, $like, $like]);
-    } elseif ($type == 'divorce') {
-        $stmt = $conn->prepare("SELECT dv.id, dv.certificate_number, 
+            WHERE CONCAT(h.first_name, ' ', h.father_name, ' ', h.grandfather_name) LIKE ? OR CONCAT(w.first_name, ' ', w.father_name, ' ', w.grandfather_name) LIKE ? OR m.certificate_number LIKE ?
+            ORDER BY m.created_at DESC";
+    }
+    if ($type == 'divorce' || $type == 'all') {
+        $queries['divorce'] = "SELECT dv.id, dv.certificate_number, 
             h.first_name as h_first, h.father_name as h_father,
             w.first_name as w_first, w.father_name as w_father, dv.registered_date
             FROM divorce_certificates dv 
             JOIN persons h ON dv.husband_id = h.id JOIN persons w ON dv.wife_id = w.id
-            WHERE h.first_name LIKE ? OR w.first_name LIKE ? OR dv.certificate_number LIKE ?
-            ORDER BY dv.created_at DESC");
-        $stmt->execute([$like, $like, $like]);
+            WHERE CONCAT(h.first_name, ' ', h.father_name, ' ', h.grandfather_name) LIKE ? OR CONCAT(w.first_name, ' ', w.father_name, ' ', w.grandfather_name) LIKE ? OR dv.certificate_number LIKE ?
+            ORDER BY dv.created_at DESC";
     }
 
-    if (isset($stmt)) {
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($queries as $t => $sql) {
+        $stmt = $conn->prepare($sql);
+        // Bind correct number of parameters based on the query
+        $paramCount = substr_count($sql, '?');
+        $params = array_fill(0, $paramCount, $like);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $row['cert_type'] = $t;
+            $results[] = $row;
+        }
     }
+
+    // Sort combined results by registered date or ID if needed
+    usort($results, function($a, $b) {
+        return strcmp($b['registered_date'], $a['registered_date']);
+    });
 }
 ?>
 <!DOCTYPE html>
@@ -115,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['type']) && isset($_GET['
                 <h3><i class="fas fa-search"></i> Search & Reprint Existing Certificates</h3>
                 <form method="GET" class="search-form" style="margin-top:15px;">
                     <select name="type" class="form-control" required>
-                        <option value="">-- Select Certificate Type --</option>
+                        <option value="all" <?php echo $type=='all'?'selected':''; ?>>All Certificate Types</option>
                         <option value="birth" <?php echo $type=='birth'?'selected':''; ?>>Birth Certificate</option>
                         <option value="death" <?php echo $type=='death'?'selected':''; ?>>Death Certificate</option>
                         <option value="marriage" <?php echo $type=='marriage'?'selected':''; ?>>Marriage Certificate</option>
@@ -134,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['type']) && isset($_GET['
                     <table>
                         <thead>
                             <tr>
+                                <th>Type</th>
                                 <th>Certificate #</th>
                                 <th>Name(s)</th>
                                 <th>Registered</th>
@@ -143,10 +158,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['type']) && isset($_GET['
                         <tbody>
                         <?php if(count($results) > 0): foreach($results as $r): ?>
                             <tr>
+                                <td><span class="badge badge-<?php echo $r['cert_type']; ?>"><?php echo ucfirst($r['cert_type']); ?></span></td>
                                 <td><?php echo htmlspecialchars($r['certificate_number']); ?></td>
                                 <td>
                                     <?php
-                                    if ($type == 'birth' || $type == 'death') {
+                                    if ($r['cert_type'] == 'birth' || $r['cert_type'] == 'death') {
                                         echo htmlspecialchars($r['first_name'].' '.$r['father_name'].' '.$r['grandfather_name']);
                                     } else {
                                         echo htmlspecialchars($r['h_first'].' '.$r['h_father']) . ' & ' . htmlspecialchars($r['w_first'].' '.$r['w_father']);
@@ -155,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['type']) && isset($_GET['
                                 </td>
                                 <td><?php echo $r['registered_date']; ?></td>
                                 <td>
-                                    <a href="print_<?php echo $type; ?>.php?id=<?php echo $r['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i> Print</a>
+                                    <a href="print_<?php echo $r['cert_type']; ?>.php?id=<?php echo $r['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i> Print</a>
                                 </td>
                             </tr>
                         <?php endforeach; else: ?>
