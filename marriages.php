@@ -70,14 +70,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Fetch all
-$certs = $conn->query("SELECT m.*, 
+// Search
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$query = "SELECT m.*, 
     h.first_name as h_first, h.father_name as h_father, h.grandfather_name as h_grand,
     w.first_name as w_first, w.father_name as w_father, w.grandfather_name as w_grand
     FROM marriage_certificates m 
     JOIN persons h ON m.husband_id = h.id 
-    JOIN persons w ON m.wife_id = w.id 
-    ORDER BY m.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
+    JOIN persons w ON m.wife_id = w.id";
+
+if ($search) {
+    $query .= " WHERE CONCAT(h.first_name, ' ', h.father_name, ' ', h.grandfather_name) LIKE ? OR CONCAT(w.first_name, ' ', w.father_name, ' ', w.grandfather_name) LIKE ? OR m.certificate_number LIKE ?";
+    $query .= " ORDER BY m.created_at DESC";
+    $stmt = $conn->prepare($query);
+    $like = "%$search%";
+    $stmt->execute([$like, $like, $like]);
+    $certs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $query .= " ORDER BY m.created_at DESC";
+    $certs = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -191,7 +203,16 @@ $certs = $conn->query("SELECT m.*,
 
             <!-- Table -->
             <div class="card-table">
-                <h3>Marriage Certificates (<?php echo count($certs); ?>)</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Marriage Certificates (<?php echo count($certs); ?>)</h3>
+                    <form method="GET" style="display: flex; gap: 10px; width: 400px;">
+                        <input type="text" name="search" class="form-control" placeholder="Search husband, wife or cert #..." value="<?php echo htmlspecialchars($search); ?>" style="padding: 8px 12px;">
+                        <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 20px;"><i class="fas fa-search"></i></button>
+                        <?php if($search): ?>
+                            <a href="marriages.php" class="btn btn-secondary" style="width: auto; padding: 8px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;"><i class="fas fa-times"></i></a>
+                        <?php endif; ?>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table>
                         <thead>

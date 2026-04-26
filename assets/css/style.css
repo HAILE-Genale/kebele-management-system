@@ -253,3 +253,15 @@ table th {
 table tbody tr:hover {
     background-color: #fcfcfc;
 }
+/* Badges for Certificate Types */
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.badge-birth { background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; }
+.badge-death { background-color: #fafafa; color: #424242; border: 1px solid #eeeeee; }
+.badge-marriage { background-color: #fce4ec; color: #880e4f; border: 1px solid #f8bbd0; }
+.badge-divorce { background-color: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }

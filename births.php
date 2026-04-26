@@ -143,7 +143,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="card-table" style="margin-top: 30px;">
-                <h3><i class="fas fa-list"></i> Registered Birth Certificates</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3><i class="fas fa-list"></i> Registered Birth Certificates</h3>
+                    <form method="GET" style="display: flex; gap: 10px; width: 400px;">
+                        <input type="text" name="search" class="form-control" placeholder="Search name or cert #..." value="<?php echo htmlspecialchars($search ?? ''); ?>" style="padding: 8px 12px;">
+                        <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 20px;"><i class="fas fa-search"></i></button>
+                        <?php if(isset($_GET['search'])): ?>
+                            <a href="births.php" class="btn btn-secondary" style="width: auto; padding: 8px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;"><i class="fas fa-times"></i></a>
+                        <?php endif; ?>
+                    </form>
+                </div>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -158,13 +167,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </thead>
                         <tbody>
                             <?php
-                            $births = $conn->query("
+                            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+                            $query = "
                                 SELECT b.id, b.certificate_number, b.registered_date, 
                                        p.first_name, p.father_name, p.grandfather_name, p.sex, p.date_of_birth
                                 FROM birth_certificates b
                                 JOIN persons p ON b.person_id = p.id
-                                ORDER BY b.created_at DESC
-                            ");
+                            ";
+                            if ($search) {
+                                $query .= " WHERE CONCAT(p.first_name, ' ', p.father_name, ' ', p.grandfather_name) LIKE ? OR b.certificate_number LIKE ?";
+                                $query .= " ORDER BY b.created_at DESC";
+                                $births = $conn->prepare($query);
+                                $like = "%$search%";
+                                $births->execute([$like, $like]);
+                            } else {
+                                $query .= " ORDER BY b.created_at DESC";
+                                $births = $conn->query($query);
+                            }
+
                             if($births->rowCount() > 0):
                                 while($row = $births->fetch(PDO::FETCH_ASSOC)):
                             ?>
