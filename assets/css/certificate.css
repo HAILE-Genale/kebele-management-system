@@ -1,0 +1,215 @@
+/* assets/css/certificate.css */
+
+/* Print Page Setup */
+@page {
+    size: A4 landscape;
+    margin: 0;
+}
+
+body.print-mode {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Times New Roman', Times, serif; /* Formal font */
+}
+
+@media screen {
+    body.print-mode {
+        background-color: #d6d6d6;
+        padding: 20px 0 40px;
+        overflow-x: auto;
+    }
+    .certificate-wrapper {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    }
+}
+
+/* Certificate Container */
+.certificate-wrapper {
+    width: 297mm; /* A4 Landscape width */
+    height: 210mm; /* A4 Landscape height */
+    padding: 15mm;
+    position: relative;
+    background-color: #fcfbf9;
+    /* In actual use, replace this with the real paper texture:
+       background-image: url('../images/paper-texture.jpg'); */
+    background-size: cover;
+    box-sizing: border-box;
+}
+
+/* Dynamic Border Colors based on Certificate Type */
+.border-birth { border: 15px solid #5a7b9c; } /* Example blue border */
+.border-death { border: 15px solid #5c4033; } /* Example brown border */
+.border-marriage { border: 15px solid #2e6030; } /* Example green border */
+.border-divorce { border: 15px solid #6b6b6b; } /* Example grey border */
+
+.cert-inner {
+    border: 3px double #333; /* Inner formal border */
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 20px 40px;
+}
+
+/* 3-column certificate header: spacer | flag+titles | meta */
+.cert-header {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+.cert-header-spacer {
+    flex: 0 0 190px; /* mirrors top-meta width */
+}
+.cert-header-center {
+    flex: 1;
+    text-align: center;
+}
+
+/* General Layout Elements */
+.header-section {
+    text-align: center;
+}
+
+.flag {
+    width: 80px;
+    height: auto;
+    margin: 0 auto 10px;
+}
+
+.title-am {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.title-en {
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.cert-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Top Right Meta — in-flow (right column of cert-header) */
+.top-meta {
+    flex: 0 0 190px;
+    text-align: right;
+    font-size: 7px;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #555;
+    padding-top: 4px;
+}
+
+.top-meta .multi-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1px;
+}
+.top-meta strong {
+    font-size: 9px;
+    color: #000;
+}
+
+/* Fields & Lines */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    gap: 20px;
+}
+
+.field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.field-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #333;
+}
+
+.field-value {
+    border-bottom: 1px dotted #000;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 5px;
+    font-family: inherit;
+    min-height: 22px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.seal-box {
+    position: absolute;
+    bottom: 20px;
+    left: 45%;
+    text-align: center;
+}
+
+.signature-box {
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    width: 200px;
+}
+
+/* Small sections grouping */
+.multi-field {
+    display: flex;
+    gap: 10px;
+}
+.multi-field .field {
+    flex: 1;
+}
+
+/* Photos (For Marriage) */
+.photo-box {
+    width: 100px;
+    height: 120px;
+    border: 2px solid #333;
+    position: absolute;
+    top: 50px;
+}
+.photo-husband { left: 40px; }
+.photo-wife { right: 40px; }
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    body {
+        margin: 0;
+        box-shadow: none;
+    }
+}
+
+.print-btn-container {
+    text-align: center;
+    padding: 20px;
+    background: #f1f1f1;
+}
+.print-btn-container button {
+    padding: 10px 25px;
+    font-size: 18px;
+    background: #0b3d91;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
