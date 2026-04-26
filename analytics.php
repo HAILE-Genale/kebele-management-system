@@ -86,7 +86,6 @@ for ($i = 29; $i >= 0; $i--) {
     $daily_counts[] = (int)$c->fetch()['c'];
 }
 
-// 8. Registrar performance
 $registrar_stats = $conn->query("
     SELECT u.name, 
         (SELECT COUNT(*) FROM birth_certificates WHERE registrar_id = u.id) +
@@ -95,6 +94,16 @@ $registrar_stats = $conn->query("
         (SELECT COUNT(*) FROM divorce_certificates WHERE registrar_id = u.id) as total_certs
     FROM users u ORDER BY total_certs DESC LIMIT 5
 ")->fetchAll(PDO::FETCH_ASSOC);
+
+// 9. Educational Level distribution
+$edu_stats = $conn->query("SELECT educational_level, COUNT(*) as c FROM persons GROUP BY educational_level ORDER BY c DESC")->fetchAll(PDO::FETCH_ASSOC);
+$edu_labels = array_column($edu_stats, 'educational_level');
+$edu_values = array_column($edu_stats, 'c');
+
+// 10. Occupational Level distribution (Top 8)
+$occ_stats = $conn->query("SELECT occupational_level, COUNT(*) as c FROM persons WHERE occupational_level != '' GROUP BY occupational_level ORDER BY c DESC LIMIT 8")->fetchAll(PDO::FETCH_ASSOC);
+$occ_labels = array_column($occ_stats, 'occupational_level');
+$occ_values = array_column($occ_stats, 'c');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -294,11 +303,26 @@ $registrar_stats = $conn->query("
                     </div>
                 </div>
 
-                <!-- 7. Nationality (Horizontal Bar) -->
                 <div class="chart-card">
                     <h3><i class="fas fa-globe-africa"></i> Top Nationalities</h3>
                     <div class="chart-container">
                         <canvas id="natChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 9. Educational Level (Bar Chart) -->
+                <div class="chart-card">
+                    <h3><i class="fas fa-graduation-cap"></i> Educational Level Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="eduChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 10. Occupational Level (Bar Chart) -->
+                <div class="chart-card">
+                    <h3><i class="fas fa-briefcase"></i> Occupational Level (Top 8)</h3>
+                    <div class="chart-container">
+                        <canvas id="occChart"></canvas>
                     </div>
                 </div>
 
@@ -525,6 +549,53 @@ $registrar_stats = $conn->query("
             plugins: { ...defaultOptions.plugins, legend: { display: false } },
             scales: {
                 x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { stepSize: 1 } },
+                y: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 9. Educational Level (Bar)
+    new Chart(document.getElementById('eduChart'), {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($edu_labels); ?>,
+            datasets: [{
+                label: 'Citizens',
+                data: <?php echo json_encode(array_map('intval', $edu_values)); ?>,
+                backgroundColor: vibrant,
+                borderRadius: 8,
+                barThickness: 30
+            }]
+        },
+        options: {
+            ...defaultOptions,
+            plugins: { ...defaultOptions.plugins, legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    // 10. Occupational Level (Horizontal Bar)
+    new Chart(document.getElementById('occChart'), {
+        type: 'bar',
+        data: {
+            labels: <?php echo json_encode($occ_labels); ?>,
+            datasets: [{
+                label: 'Citizens',
+                data: <?php echo json_encode(array_map('intval', $occ_values)); ?>,
+                backgroundColor: '#4facfe',
+                borderRadius: 8,
+                barThickness: 25
+            }]
+        },
+        options: {
+            ...defaultOptions,
+            indexAxis: 'y',
+            plugins: { ...defaultOptions.plugins, legend: { display: false } },
+            scales: {
+                x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
                 y: { grid: { display: false } }
             }
         }
