@@ -43,7 +43,7 @@ if ($cert['registrar_id']) {
 <head>
     <meta charset="UTF-8">
     <title>Print Birth Certificate - <?php echo htmlspecialchars($cert['first_name']); ?></title>
-    <link rel="stylesheet" href="assets/css/certificate.css">
+    <link rel="stylesheet" href="assets/css/certificate.css?v=<?php echo time(); ?>">
 </head>
 <body class="print-mode border-birth">
     

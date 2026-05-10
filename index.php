@@ -95,13 +95,36 @@ if (isLoggedIn()) {
             color: rgba(255,255,255,0.4); font-size: 0.8em;
             position: relative; z-index: 1;
         }
-        .amharic-text { font-size: 1.5em; color: rgba(255,255,255,0.9); margin-bottom: 5px; animation: fadeInDown 0.9s ease; }
+        .oromo-welcome { font-size: 1.5em; color: rgba(255,255,255,0.9); margin-bottom: 5px; animation: fadeInDown 0.9s ease; letter-spacing: 1px; }
+        .welcome-card {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;
+            padding: 40px 50px; text-align: center; color: #fff;
+            max-width: 680px; width: 100%; margin-bottom: 40px;
+            animation: fadeInUp 1.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .welcome-card .welcome-big {
+            font-size: 2.6em; font-weight: 800;
+            color: #FED100; letter-spacing: 2px;
+            margin-bottom: 16px; text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+        }
+        .welcome-card .welcome-sub {
+            font-size: 1.08em; color: rgba(255,255,255,0.85);
+            line-height: 1.8; font-weight: 400;
+        }
+        .welcome-divider {
+            width: 60px; height: 3px;
+            background: linear-gradient(90deg, #009A44, #FED100, #EF3340);
+            border-radius: 2px; margin: 18px auto;
+        }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none; overflow: hidden; }
         .particle { position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 50%; animation: float linear infinite; }
         @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; } }
-        @media (max-width: 600px) { .landing-title { font-size: 1.8em; } .landing-subtitle { font-size: 1em; } .features-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { .landing-title { font-size: 1.8em; } .landing-subtitle { font-size: 1em; } .welcome-card { padding: 28px 20px; } .welcome-card .welcome-big { font-size: 1.8em; } }
     </style>
 </head>
 <body>
@@ -111,36 +134,23 @@ if (isLoggedIn()) {
     <div class="landing-container">
         <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" class="flag-img">
 
-        <div class="amharic-text">እንኳን ደህና መጡ</div>
-        <h1 class="landing-title">Welcome to Bekke Agalo Kebele</h1>
+        <div class="oromo-welcome">Baga Nagaan Dhuftan!</div>
+        <h1 class="landing-title">Bekke Agalo Kebele</h1>
         <p class="landing-subtitle">Civil Database Management System</p>
         <p class="landing-kebele">Federal Democratic Republic of Ethiopia · Vital Event Records</p>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-baby"></i>
-                <h4>Birth Records</h4>
-                <p>Manage and certify birth records in the kebele</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-cross"></i>
-                <h4>Death Records</h4>
-                <p>Record and issue death certificates</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-ring"></i>
-                <h4>Marriage Records</h4>
-                <p>Manage official marriage records</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-file-contract"></i>
-                <h4>Divorce Records</h4>
-                <p>Process and manage divorce records</p>
-            </div>
+        <div class="welcome-card">
+            <div class="welcome-big">&#x1F44B; Baga Nagaan Dhuftan!</div>
+            <div class="welcome-divider"></div>
+            <p class="welcome-sub">
+                Gara Sirna Mana Qophii Beeksisaa Kebele Bekke Agalo baga nagaan dhuftan.<br>
+                Nageenyi fi fayyaan keessan haa tahu.<br><br>
+                <em style="color:#FED100;">"Nagaa fi tokkummaan nu cimsa."</em>
+            </p>
         </div>
 
-        <a href="login.php" class="cta-btn"><i class="fas fa-sign-in-alt"></i> Login to System</a>
-        <a href="#" class="secondary-btn">Authorized personnel only</a>
+        <a href="login.php" class="cta-btn"><i class="fas fa-sign-in-alt"></i> Seena (Login)</a>
+        <a href="#" class="secondary-btn">Hojjettootni Beeksifame qofa · Authorized personnel only</a>
     </div>
 
     <footer class="landing-footer">
