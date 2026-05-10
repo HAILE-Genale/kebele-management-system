@@ -33,7 +33,7 @@ if ($cert['registrar_id']) {
 <head>
     <meta charset="UTF-8">
     <title>Print Marriage Certificate</title>
-    <link rel="stylesheet" href="assets/css/certificate.css">
+    <link rel="stylesheet" href="assets/css/certificate.css?v=2">
 </head>
 <body class="print-mode">
 
@@ -46,23 +46,49 @@ if ($cert['registrar_id']) {
     <div class="certificate-wrapper border-marriage">
         <div class="cert-inner">
 
-            <div class="cert-header">
-                <div class="cert-header-spacer"></div>
-                <div class="cert-header-center">
-                    <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:90px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
-                    <div class="title-am">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
-                    <div class="title-en">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
-                    <div class="cert-title">የጋብቻ ምስክር ወረቀት<br>Marriage Certificate</div>
+            <div class="cert-header" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; width:100%;">
+                <!-- Left Column -->
+                <div style="flex: 0 0 320px; text-align:left; font-size:12px; line-height:1.4;">
+                    <div style="margin-bottom:15px; font-weight:bold;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <span>የጋብቻ ክብር መዝገብ ቅጽ ቁጥር</span>
+                            <span style="flex:1; border-bottom:1px dashed #333; margin-left:5px; text-align:center; font-weight:normal;"><?php echo htmlspecialchars($cert['certificate_number']); ?></span>
+                        </div>
+                        <div>Marriage Register Form Number</div>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px;">
+                            <span>የጋብቻ ምዝገባ ልዩ መለያ ቁጥር</span>
+                            <span style="flex:1; border-bottom:1px dashed #333; margin-left:5px; text-align:center; font-weight:normal;">MRG-<?php echo str_pad($cert['id'], 6, '0', STR_PAD_LEFT); ?></span>
+                        </div>
+                        <div>Marriage Registration Unique Identification Number</div>
+                    </div>
+                    <div style="width:130px; height:160px; border:4px solid #111; margin-left:15px;"></div>
                 </div>
-                <div class="top-meta">
-                    <div class="multi-field">
-                        <span>የጋብቻ ክብር መዝገብ ቅጽ ቁጥር / Marriage Register Form Number:</span>
-                        <strong><?php echo $cert['certificate_number']; ?></strong>
+
+                <!-- Center Column -->
+                <div class="cert-header-center" style="flex:1; text-align:center; padding-top:10px;">
+                    <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" style="width:110px; height:auto; margin:0 auto 10px; display:block; border-radius:3px;">
+                    <div class="title-am" style="font-size:20px; font-weight:bold; margin-bottom:5px;">በኢትዮጵያ ፌዴራላዊ ዲሞክራሲያዊ ሪፐብሊክ የወሳኝ ኩነት ምዝገባ</div>
+                    <div class="title-en" style="font-size:15px; font-weight:bold; margin-bottom:15px;">Federal Democratic Republic of Ethiopia Vital Event Registration</div>
+                    <div class="cert-title" style="font-size:24px; font-weight:bold;">የጋብቻ ምስክር ወረቀት<br>Marriage Certificate</div>
+                </div>
+
+                <!-- Right Column -->
+                <div style="flex: 0 0 360px; text-align:left; font-size:12px; line-height:1.4;">
+                    <div style="margin-bottom:15px; font-weight:bold;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                            <span>የሚስት ልደት ምዝገባ ልዩ መለያ ቁጥር</span>
+                            <span style="flex:1; border-bottom:1px dashed #333; margin-left:5px; text-align:center; font-weight:normal;">BR-<?php echo str_pad($cert['wife_id'], 6, '0', STR_PAD_LEFT); ?></span>
+                        </div>
+                        <div>Wife's Birth Registration Unique Identification Number</div>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:8px;">
+                            <span>የባል ልደት ምዝገባ ልዩ መለያ ቁጥር</span>
+                            <span style="flex:1; border-bottom:1px dashed #333; margin-left:5px; text-align:center; font-weight:normal;">BR-<?php echo str_pad($cert['husband_id'], 6, '0', STR_PAD_LEFT); ?></span>
+                        </div>
+                        <div>Husband's Birth Registration Unique Identification Number</div>
                     </div>
-                    <div class="multi-field">
-                        <span>የጋብቻ ምዝገባ ልዩ መለያ ቁጥር / Marriage Registration Unique ID:</span>
-                        <strong>MRG-<?php echo str_pad($cert['id'], 6, '0', STR_PAD_LEFT); ?></strong>
-                    </div>
+                    <div style="width:130px; height:160px; border:4px solid #111; margin-left:auto; margin-right:15px;"></div>
                 </div>
             </div>
 

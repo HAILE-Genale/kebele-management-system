@@ -31,18 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $place_of_birth = trim($_POST['place_of_birth']);
     $nationality = trim($_POST['nationality']);
     $marital_status = $_POST['marital_status'];
-    $educational_level = trim($_POST['educational_level']);
-    $occupational_level = trim($_POST['occupational_level']);
+    $educational_level = $_POST['educational_level'];
+    $occupational_status = $_POST['occupational_status'];
 
     if (isset($_POST['edit_id']) && !empty($_POST['edit_id'])) {
         // UPDATE
-        $stmt = $conn->prepare("UPDATE persons SET first_name=?, father_name=?, grandfather_name=?, sex=?, date_of_birth=?, place_of_birth=?, nationality=?, marital_status=?, educational_level=?, occupational_level=? WHERE id=?");
-        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_level, $_POST['edit_id']]);
+        $stmt = $conn->prepare("UPDATE persons SET first_name=?, father_name=?, grandfather_name=?, sex=?, date_of_birth=?, place_of_birth=?, nationality=?, marital_status=?, educational_level=?, occupational_status=? WHERE id=?");
+        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_status, $_POST['edit_id']]);
         $success = "Citizen record updated successfully.";
     } else {
         // CREATE
-        $stmt = $conn->prepare("INSERT INTO persons (first_name, father_name, grandfather_name, sex, date_of_birth, place_of_birth, nationality, marital_status, educational_level, occupational_level) VALUES (?,?,?,?,?,?,?,?,?,?)");
-        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_level]);
+        $stmt = $conn->prepare("INSERT INTO persons (first_name, father_name, grandfather_name, sex, date_of_birth, place_of_birth, nationality, marital_status, educational_level, occupational_status) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        $stmt->execute([$first_name, $father_name, $grandfather_name, $sex, $date_of_birth, $place_of_birth, $nationality, $marital_status, $educational_level, $occupational_status]);
         $success = "Citizen registered successfully.";
     }
 }
@@ -58,11 +58,11 @@ if (isset($_GET['edit'])) {
 // Search
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 if ($search) {
-    $stmt = $conn->prepare("SELECT * FROM persons WHERE CONCAT(first_name, ' ', father_name, ' ', grandfather_name) LIKE ? OR id = ? ORDER BY created_at DESC");
+    $stmt = $conn->prepare("SELECT * FROM persons WHERE first_name LIKE ? OR father_name LIKE ? OR grandfather_name LIKE ? OR id = ? ORDER BY id DESC");
     $like = "%$search%";
-    $stmt->execute([$like, $search]);
+    $stmt->execute([$like, $like, $like, $search]);
 } else {
-    $stmt = $conn->query("SELECT * FROM persons ORDER BY created_at DESC");
+    $stmt = $conn->query("SELECT * FROM persons ORDER BY id DESC");
 }
 $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -156,19 +156,26 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="form-group">
                             <label>Educational Level</label>
                             <select name="educational_level" class="form-control">
-                                <option value="Illiterate" <?php echo ($edit_data && $edit_data['educational_level']=='Illiterate') ? 'selected' : ''; ?>>Illiterate</option>
-                                <option value="Primary" <?php echo ($edit_data && $edit_data['educational_level']=='Primary') ? 'selected' : ''; ?>>Primary (1-8)</option>
-                                <option value="Secondary" <?php echo ($edit_data && $edit_data['educational_level']=='Secondary') ? 'selected' : ''; ?>>Secondary (9-12)</option>
-                                <option value="Certificate/Diploma" <?php echo ($edit_data && $edit_data['educational_level']=='Certificate/Diploma') ? 'selected' : ''; ?>>Certificate/Diploma</option>
-                                <option value="Degree" <?php echo ($edit_data && $edit_data['educational_level']=='Degree') ? 'selected' : ''; ?>>Degree</option>
-                                <option value="Masters" <?php echo ($edit_data && $edit_data['educational_level']=='Masters') ? 'selected' : ''; ?>>Masters</option>
-                                <option value="PhD" <?php echo ($edit_data && $edit_data['educational_level']=='PhD') ? 'selected' : ''; ?>>PhD</option>
-                                <option value="Other" <?php echo ($edit_data && $edit_data['educational_level']=='Other') ? 'selected' : ''; ?>>Other</option>
+                                <?php
+                                $edu_levels = ['No Formal Education','Primary (1-8)','Secondary (9-12)','Certificate/Diploma',"Bachelor's Degree","Master's Degree",'PhD/Doctorate'];
+                                foreach ($edu_levels as $lvl):
+                                    $sel = ($edit_data && $edit_data['educational_level']==$lvl) ? 'selected' : '';
+                                ?>
+                                <option value="<?php echo $lvl; ?>" <?php echo $sel; ?>><?php echo $lvl; ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Occupational Level</label>
-                            <input type="text" name="occupational_level" class="form-control" placeholder="e.g. Farmer, Student, Civil Servant" value="<?php echo $edit_data ? htmlspecialchars($edit_data['occupational_level']) : ''; ?>">
+                            <label>Occupational Status</label>
+                            <select name="occupational_status" class="form-control">
+                                <?php
+                                $occ_statuses = ['Employed','Self-Employed','Unemployed','Student','Retired','Farmer','Housewife','Other'];
+                                foreach ($occ_statuses as $occ):
+                                    $sel = ($edit_data && $edit_data['occupational_status']==$occ) ? 'selected' : '';
+                                ?>
+                                <option value="<?php echo $occ; ?>" <?php echo $sel; ?>><?php echo $occ; ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="form-group" style="grid-column: 1/-1;">
                             <button type="submit" class="btn btn-primary"><?php echo $edit_data ? 'Update Citizen' : 'Register Citizen'; ?></button>
@@ -197,6 +204,8 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <th>Date of Birth</th>
                                 <th>Nationality</th>
                                 <th>Marital Status</th>
+                                <th>Educational Level</th>
+                                <th>Occupational Status</th>
                                 <th>Activity Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -210,6 +219,8 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <td><?php echo $p['date_of_birth']; ?></td>
                                 <td><?php echo htmlspecialchars($p['nationality']); ?></td>
                                 <td><?php echo $p['marital_status']; ?></td>
+                                <td><?php echo htmlspecialchars($p['educational_level'] ?? '—'); ?></td>
+                                <td><?php echo htmlspecialchars($p['occupational_status'] ?? '—'); ?></td>
                                 <td>
                                     <?php if(($p['status'] ?? 'Active') == 'Active'): ?>
                                         <span class="badge-active">Active</span>
@@ -227,7 +238,7 @@ $persons = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </td>
                             </tr>
                         <?php endforeach; else: ?>
-                            <tr><td colspan="8" style="text-align:center;">No citizens found.</td></tr>
+                            <tr><td colspan="10" style="text-align:center;">No citizens found.</td></tr>
                         <?php endif; ?>
                         </tbody>
                     </table>

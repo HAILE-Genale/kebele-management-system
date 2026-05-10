@@ -68,26 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Search
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$query = "SELECT dv.*, 
+// Fetch all
+$certs = $conn->query("SELECT dv.*, 
     h.first_name as h_first, h.father_name as h_father, h.grandfather_name as h_grand,
     w.first_name as w_first, w.father_name as w_father, w.grandfather_name as w_grand
     FROM divorce_certificates dv 
     JOIN persons h ON dv.husband_id = h.id 
-    JOIN persons w ON dv.wife_id = w.id";
-
-if ($search) {
-    $query .= " WHERE CONCAT(h.first_name, ' ', h.father_name, ' ', h.grandfather_name) LIKE ? OR CONCAT(w.first_name, ' ', w.father_name, ' ', w.grandfather_name) LIKE ? OR dv.certificate_number LIKE ?";
-    $query .= " ORDER BY dv.created_at DESC";
-    $stmt = $conn->prepare($query);
-    $like = "%$search%";
-    $stmt->execute([$like, $like, $like]);
-    $certs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} else {
-    $query .= " ORDER BY dv.created_at DESC";
-    $certs = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
-}
+    JOIN persons w ON dv.wife_id = w.id 
+    ORDER BY dv.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -201,16 +189,7 @@ if ($search) {
 
             <!-- Table -->
             <div class="card-table">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3>Divorce Certificates (<?php echo count($certs); ?>)</h3>
-                    <form method="GET" style="display: flex; gap: 10px; width: 400px;">
-                        <input type="text" name="search" class="form-control" placeholder="Search husband, wife or cert #..." value="<?php echo htmlspecialchars($search); ?>" style="padding: 8px 12px;">
-                        <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 20px;"><i class="fas fa-search"></i></button>
-                        <?php if($search): ?>
-                            <a href="divorces.php" class="btn btn-secondary" style="width: auto; padding: 8px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;"><i class="fas fa-times"></i></a>
-                        <?php endif; ?>
-                    </form>
-                </div>
+                <h3>Divorce Certificates (<?php echo count($certs); ?>)</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -230,7 +209,7 @@ if ($search) {
                                 <td><?php echo htmlspecialchars($c['w_first'].' '.$c['w_father'].' '.$c['w_grand']); ?></td>
                                 <td><?php echo $c['date_of_divorce']; ?></td>
                                 <td>
-                                    <a href="print_divorce.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i></a>
+                                    <a href="print_divorce.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm"><i class="fas fa-print"></i></a>
                                     <a href="divorces.php?delete=<?php echo $c['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

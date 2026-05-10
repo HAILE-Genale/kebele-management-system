@@ -65,21 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Search
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$query = "SELECT d.*, p.first_name, p.father_name, p.grandfather_name FROM death_certificates d JOIN persons p ON d.person_id = p.id";
-
-if ($search) {
-    $query .= " WHERE CONCAT(p.first_name, ' ', p.father_name, ' ', p.grandfather_name) LIKE ? OR d.certificate_number LIKE ?";
-    $query .= " ORDER BY d.created_at DESC";
-    $stmt = $conn->prepare($query);
-    $like = "%$search%";
-    $stmt->execute([$like, $like]);
-    $certs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} else {
-    $query .= " ORDER BY d.created_at DESC";
-    $certs = $conn->query($query)->fetchAll(PDO::FETCH_ASSOC);
-}
+// Fetch all death certificates
+$certs = $conn->query("SELECT d.*, p.first_name, p.father_name, p.grandfather_name FROM death_certificates d JOIN persons p ON d.person_id = p.id ORDER BY d.created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -175,16 +162,7 @@ if ($search) {
 
             <!-- Existing Records -->
             <div class="card-table">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3>Death Certificates (<?php echo count($certs); ?>)</h3>
-                    <form method="GET" style="display: flex; gap: 10px; width: 400px;">
-                        <input type="text" name="search" class="form-control" placeholder="Search name or cert #..." value="<?php echo htmlspecialchars($search); ?>" style="padding: 8px 12px;">
-                        <button type="submit" class="btn btn-primary" style="width: auto; padding: 8px 20px;"><i class="fas fa-search"></i></button>
-                        <?php if($search): ?>
-                            <a href="deaths.php" class="btn btn-secondary" style="width: auto; padding: 8px 15px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px;"><i class="fas fa-times"></i></a>
-                        <?php endif; ?>
-                    </form>
-                </div>
+                <h3>Death Certificates (<?php echo count($certs); ?>)</h3>
                 <div class="table-responsive">
                     <table>
                         <thead>
@@ -204,7 +182,7 @@ if ($search) {
                                 <td><?php echo $c['date_of_death']; ?></td>
                                 <td><?php echo $c['registered_date']; ?></td>
                                 <td>
-                                    <a href="print_death.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm" target="_blank"><i class="fas fa-print"></i></a>
+                                    <a href="print_death.php?id=<?php echo $c['id']; ?>" class="btn btn-info btn-sm"><i class="fas fa-print"></i></a>
                                     <a href="deaths.php?delete=<?php echo $c['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this certificate?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

@@ -5,7 +5,7 @@ try {
     $db = new Database();
     $conn = $db->getConnection();
     
-    echo "<h2>Updating Database Schema</h2>";
+    echo "<h2>Finalizing Database Schema Update</h2>";
     
     // Check and add educational_level
     $check = $conn->query("SHOW COLUMNS FROM persons LIKE 'educational_level'");
@@ -25,7 +25,7 @@ try {
         echo "<p style='color:blue;'>ℹ️ 'occupational_level' column already exists.</p>";
     }
 
-    echo "<p><strong>Update complete!</strong> You can now go back to <a href='analytics.php'>Analytics</a>.</p>";
+    echo "<p><strong>Update complete!</strong> You can now use <a href='analytics.php'>Analytics</a> and <a href='persons.php'>Citizens Registry</a>.</p>";
 
 } catch (Exception $e) {
     echo "<p style='color:red;'>❌ Error updating database: " . $e->getMessage() . "</p>";

@@ -24,10 +24,16 @@ CREATE TABLE IF NOT EXISTS persons (
     place_of_birth VARCHAR(150),
     nationality VARCHAR(100) DEFAULT 'Ethiopian',
     marital_status ENUM('Single', 'Married', 'Divorced', 'Widowed') DEFAULT 'Single',
+    educational_level ENUM('No Formal Education', 'Primary (1-8)', 'Secondary (9-12)', 'Certificate/Diploma', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD/Doctorate') DEFAULT 'No Formal Education',
+    occupational_status ENUM('Employed', 'Self-Employed', 'Unemployed', 'Student', 'Retired', 'Farmer', 'Housewife', 'Other') DEFAULT 'Unemployed',
     status ENUM('Active', 'Inactive') DEFAULT 'Active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- Migration: Add columns if they don't exist (run after initial setup)
+-- ALTER TABLE persons ADD COLUMN IF NOT EXISTS educational_level ENUM('No Formal Education','Primary (1-8)','Secondary (9-12)','Certificate/Diploma','Bachelor\'s Degree','Master\'s Degree','PhD/Doctorate') DEFAULT 'No Formal Education';
+-- ALTER TABLE persons ADD COLUMN IF NOT EXISTS occupational_status ENUM('Employed','Self-Employed','Unemployed','Student','Retired','Farmer','Housewife','Other') DEFAULT 'Unemployed';
 
 -- 2.1 Death Records Table (for existing residents)
 CREATE TABLE IF NOT EXISTS death_records (

@@ -95,13 +95,13 @@ if (isLoggedIn()) {
             color: rgba(255,255,255,0.4); font-size: 0.8em;
             position: relative; z-index: 1;
         }
-        .amharic-text { font-size: 1.5em; color: rgba(255,255,255,0.9); margin-bottom: 5px; animation: fadeInDown 0.9s ease; }
+        .welcome-text { font-size: 1.5em; color: rgba(255,255,255,0.9); margin-bottom: 5px; animation: fadeInDown 0.9s ease; letter-spacing: 1px; }
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         .particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none; overflow: hidden; }
         .particle { position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 50%; animation: float linear infinite; }
         @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; } }
-        @media (max-width: 600px) { .landing-title { font-size: 1.8em; } .landing-subtitle { font-size: 1em; } .features-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { .landing-title { font-size: 1.8em; } .landing-subtitle { font-size: 1em; } }
     </style>
 </head>
 <body>
@@ -111,10 +111,10 @@ if (isLoggedIn()) {
     <div class="landing-container">
         <img src="assets/images/ethiopia-flag.png" alt="Ethiopian Flag" class="flag-img">
 
-        <div class="amharic-text">እንኳን ደህና መጡ</div>
+        <div class="welcome-text">እንኳን ደህና መጡ</div>
         <h1 class="landing-title">Welcome to Bekke Agalo Kebele</h1>
         <p class="landing-subtitle">Civil Database Management System</p>
-        <p class="landing-kebele">Federal Democratic Republic of Ethiopia · Vital Event Records</p>
+        <p class="landing-kebele">FEDERAL DEMOCRATIC REPUBLIC OF ETHIOPIA &middot; VITAL EVENT RECORDS</p>
 
         <div class="features-grid">
             <div class="feature-card">
@@ -140,7 +140,7 @@ if (isLoggedIn()) {
         </div>
 
         <a href="login.php" class="cta-btn"><i class="fas fa-sign-in-alt"></i> Login to System</a>
-        <a href="#" class="secondary-btn">Authorized personnel only</a>
+
     </div>
 
     <footer class="landing-footer">

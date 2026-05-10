@@ -86,6 +86,7 @@ for ($i = 29; $i >= 0; $i--) {
     $daily_counts[] = (int)$c->fetch()['c'];
 }
 
+// 8. Registrar performance
 $registrar_stats = $conn->query("
     SELECT u.name, 
         (SELECT COUNT(*) FROM birth_certificates WHERE registrar_id = u.id) +
@@ -95,15 +96,23 @@ $registrar_stats = $conn->query("
     FROM users u ORDER BY total_certs DESC LIMIT 5
 ")->fetchAll(PDO::FETCH_ASSOC);
 
-// 9. Educational Level distribution
-$edu_stats = $conn->query("SELECT educational_level, COUNT(*) as c FROM persons GROUP BY educational_level ORDER BY c DESC")->fetchAll(PDO::FETCH_ASSOC);
-$edu_labels = array_column($edu_stats, 'educational_level');
-$edu_values = array_column($edu_stats, 'c');
+// 9. Educational level distribution
+$edu_levels_list = ['No Formal Education','Primary (1-8)','Secondary (9-12)','Certificate/Diploma',"Bachelor's Degree","Master's Degree",'PhD/Doctorate'];
+$edu_counts = [];
+foreach ($edu_levels_list as $lvl) {
+    $stmt = $conn->prepare("SELECT COUNT(*) as c FROM persons WHERE educational_level = ?");
+    $stmt->execute([$lvl]);
+    $edu_counts[] = (int)$stmt->fetch()['c'];
+}
 
-// 10. Occupational Level distribution (Top 8)
-$occ_stats = $conn->query("SELECT occupational_level, COUNT(*) as c FROM persons WHERE occupational_level != '' GROUP BY occupational_level ORDER BY c DESC LIMIT 8")->fetchAll(PDO::FETCH_ASSOC);
-$occ_labels = array_column($occ_stats, 'occupational_level');
-$occ_values = array_column($occ_stats, 'c');
+// 10. Occupational status distribution
+$occ_statuses_list = ['Employed','Self-Employed','Unemployed','Student','Retired','Farmer','Housewife','Other'];
+$occ_counts = [];
+foreach ($occ_statuses_list as $occ) {
+    $stmt = $conn->prepare("SELECT COUNT(*) as c FROM persons WHERE occupational_status = ?");
+    $stmt->execute([$occ]);
+    $occ_counts[] = (int)$stmt->fetch()['c'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -303,26 +312,11 @@ $occ_values = array_column($occ_stats, 'c');
                     </div>
                 </div>
 
+                <!-- 7. Nationality (Horizontal Bar) -->
                 <div class="chart-card">
                     <h3><i class="fas fa-globe-africa"></i> Top Nationalities</h3>
                     <div class="chart-container">
                         <canvas id="natChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- 9. Educational Level (Bar Chart) -->
-                <div class="chart-card">
-                    <h3><i class="fas fa-graduation-cap"></i> Educational Level Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="eduChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- 10. Occupational Level (Bar Chart) -->
-                <div class="chart-card">
-                    <h3><i class="fas fa-briefcase"></i> Occupational Level (Top 8)</h3>
-                    <div class="chart-container">
-                        <canvas id="occChart"></canvas>
                     </div>
                 </div>
 
@@ -350,6 +344,22 @@ $occ_values = array_column($occ_stats, 'c');
                         <?php endif; ?>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- 9. Educational Level Distribution (Bar Chart) -->
+                <div class="chart-card">
+                    <h3><i class="fas fa-graduation-cap"></i> Educational Level Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="eduChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- 10. Occupational Status Distribution (Bar Chart) -->
+                <div class="chart-card">
+                    <h3><i class="fas fa-briefcase"></i> Occupational Status Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="occChart"></canvas>
+                    </div>
                 </div>
 
             </div>
@@ -554,40 +564,22 @@ $occ_values = array_column($occ_stats, 'c');
         }
     });
 
-    // 9. Educational Level (Bar)
+    // 9. Educational Level Distribution (Horizontal Bar)
     new Chart(document.getElementById('eduChart'), {
         type: 'bar',
         data: {
-            labels: <?php echo json_encode($edu_labels); ?>,
+            labels: <?php echo json_encode($edu_levels_list); ?>,
             datasets: [{
                 label: 'Citizens',
-                data: <?php echo json_encode(array_map('intval', $edu_values)); ?>,
-                backgroundColor: vibrant,
+                data: <?php echo json_encode($edu_counts); ?>,
+                backgroundColor: [
+                    'rgba(79,172,254,0.8)','rgba(67,233,123,0.8)','rgba(250,112,154,0.8)',
+                    'rgba(161,140,209,0.8)','rgba(252,203,144,0.8)','rgba(240,147,43,0.8)',
+                    'rgba(99,205,218,0.8)'
+                ],
                 borderRadius: 8,
-                barThickness: 30
-            }]
-        },
-        options: {
-            ...defaultOptions,
-            plugins: { ...defaultOptions.plugins, legend: { display: false } },
-            scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
-                x: { grid: { display: false } }
-            }
-        }
-    });
-
-    // 10. Occupational Level (Horizontal Bar)
-    new Chart(document.getElementById('occChart'), {
-        type: 'bar',
-        data: {
-            labels: <?php echo json_encode($occ_labels); ?>,
-            datasets: [{
-                label: 'Citizens',
-                data: <?php echo json_encode(array_map('intval', $occ_values)); ?>,
-                backgroundColor: '#4facfe',
-                borderRadius: 8,
-                barThickness: 25
+                borderSkipped: false,
+                barThickness: 22
             }]
         },
         options: {
@@ -595,8 +587,37 @@ $occ_values = array_column($occ_stats, 'c');
             indexAxis: 'y',
             plugins: { ...defaultOptions.plugins, legend: { display: false } },
             scales: {
-                x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' } },
-                y: { grid: { display: false } }
+                x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { stepSize: 1 } },
+                y: { grid: { display: false }, ticks: { font: { size: 11 } } }
+            }
+        }
+    });
+
+    // 10. Occupational Status Distribution (Doughnut)
+    new Chart(document.getElementById('occChart'), {
+        type: 'doughnut',
+        data: {
+            labels: <?php echo json_encode($occ_statuses_list); ?>,
+            datasets: [{
+                data: <?php echo json_encode($occ_counts); ?>,
+                backgroundColor: [
+                    '#4facfe','#43e97b','#fa709a','#a18cd1',
+                    '#fccb90','#f093fb','#fd7043','#26c6da'
+                ],
+                borderWidth: 0,
+                hoverOffset: 15
+            }]
+        },
+        options: {
+            ...defaultOptions,
+            cutout: '55%',
+            plugins: {
+                ...defaultOptions.plugins,
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: 12,
+                    cornerRadius: 8
+                }
             }
         }
     });
