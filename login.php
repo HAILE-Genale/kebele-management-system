@@ -65,8 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .back-link:hover { color: var(--primary-color); }
         .login-card h2 { font-size: 1.4em; }
         .kebele-badge { background: linear-gradient(90deg, #009A44 33%, #FED100 33% 66%, #EF3340 66%); height: 4px; border-radius: 2px; margin-bottom: 20px; }
-        .forgot-link { display: block; text-align: right; margin-top: 6px; margin-bottom: 4px; font-size: 0.83em; color: #888; text-decoration: none; transition: color 0.2s; }
-        .forgot-link:hover { color: var(--primary-color); }
     </style>
 </head>
 <body>
@@ -88,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="form-group">
                     <label for="password"><i class="fas fa-lock"></i> Password</label>
                     <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-                    <a href="forgot_password.php" class="forgot-link"><i class="fas fa-key"></i> Forgot Password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> Sign In</button>
             </form>

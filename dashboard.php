@@ -42,7 +42,7 @@ $total_divorces = getCount($conn, 'divorce_certificates');
     <!-- Main Content -->
     <main class="main-content">
         <div class="topbar">
-            <h2>Bekke Agalo Kebele Management System</h2>
+            <h2>Dashboard Overview</h2>
             <div class="user-info">
                 <span>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?> (<?php echo htmlspecialchars($_SESSION['role']); ?>)</span>
                 <a href="logout.php" class="btn btn-primary" style="padding: 6px 16px; margin-left: 25px; width: auto; display: inline-block; font-size: 0.85em;"><i class="fas fa-sign-out-alt"></i> Logout</a>
