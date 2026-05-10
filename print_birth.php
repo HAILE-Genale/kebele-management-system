@@ -43,9 +43,9 @@ if ($cert['registrar_id']) {
 <head>
     <meta charset="UTF-8">
     <title>Print Birth Certificate - <?php echo htmlspecialchars($cert['first_name']); ?></title>
-    <link rel="stylesheet" href="assets/css/certificate.css">
+    <link rel="stylesheet" href="assets/css/certificate.css?v=2">
 </head>
-<body class="print-mode border-birth">
+<body class="print-mode">
     
     <div class="print-btn-container no-print">
         <button onclick="window.print()">🖨️ Print Certificate</button>

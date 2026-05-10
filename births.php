@@ -138,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <button type="submit" class="btn btn-primary" style="font-size: 1.1em; padding: 15px;"><i class="fas fa-print"></i> Register & Print Template</button>
                         </div>
                     </div>
-                    </div>
                 </form>
             </div>
 

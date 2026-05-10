@@ -28,7 +28,7 @@ if ($cert['registrar_id']) {
 <head>
     <meta charset="UTF-8">
     <title>Print Death Certificate</title>
-    <link rel="stylesheet" href="assets/css/certificate.css">
+    <link rel="stylesheet" href="assets/css/certificate.css?v=2">
 </head>
 <body class="print-mode">
 
